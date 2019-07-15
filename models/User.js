@@ -20,7 +20,13 @@ const UserSchema = new mongoose.Schema({
     cash: {
         type: Number,
         required: true,
-    }
+    },
+    stocks: [
+        {
+            tickerSymbol: String,
+            numberOfShares: Number,
+        }
+    ]
 });
 
 const User = mongoose.model('User', UserSchema);
