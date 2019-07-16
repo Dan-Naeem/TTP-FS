@@ -63,8 +63,9 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
           fetch(url+tickerSymbol)
             .then(res => res.json())
             .then(body => {
-              console.log('ticker', tickerSymbol);
-              console.log(body)
+              console.log('ticker', tickerSymbol)
+              console.log('fetch', body)
+              console.log('price', body[0].price)
               // if body is an empty array []
               if(body.length === 0){
                 console.log('length === 1');
@@ -74,33 +75,50 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
               }
               // else is valid tickerSymbol
               else {
-                //check to see if stock already exists
-                let exists = false;
-                user.stocks.forEach(function(item, index) {
-                  // if match
-                  if( item.tickerSymbol === tickerSymbol) {
-                    // update stock, raise flag
-                    user.stocks[index].numberOfShares += numberOfShares;
-                    exists = true;
-                  }
-                });//end forEach()
-                // if new stock entry (flag not raised), update users stock profile (push)
-                if(exists === false) {
-                  // create a stock object, push
-                  let newStock = {
-                    tickerSymbol: tickerSymbol,
-                    numberOfShares: numberOfShares,
-                  }
-                  user.stocks.push(newStock);
+                // check funds
+                let cost = Number(body[0].price);
+                cost *= numberOfShares;
+                // user info
+                console.log('user info')
+                console.log('available cash', user.cash )
+                console.log('cost of shares', cost)
+                // if insufficient, dont complete transaction
+                if ( cost > user.cash){
+                  req.flash('error_msg', 'Insufficient Funds');
+                  res.redirect('/dashboard/search');
                 }
-                // save updated users profile
-                user.save()
-                  .then(user => {
-                    // successful purchase of shares
-                    req.flash('success_msg', 'Shares successfully bought');
-                    res.redirect('/dashboard');
-                  })
-                  .catch(err => console.log(err));
+                // else sufficient, begin transaction
+                else {
+                  // update available cash
+                  user.cash -= cost;
+                  //check to see if stock already exists
+                  let exists = false;
+                  user.stocks.forEach(function(item, index) {
+                    // if match
+                    if( item.tickerSymbol === tickerSymbol) {
+                      // update stock, raise flag
+                      user.stocks[index].numberOfShares += numberOfShares;
+                      exists = true;
+                    }
+                  });//end forEach()
+                  // if new stock entry (flag not raised), update users stock profile (push)
+                  if(exists === false) {
+                    // create a stock object, push
+                    let newStock = {
+                      tickerSymbol: tickerSymbol,
+                      numberOfShares: numberOfShares,
+                    }
+                    user.stocks.push(newStock);
+                  }
+                  // save updated users profile
+                  user.save()
+                    .then(user => {
+                      // successful purchase of shares
+                      req.flash('success_msg', 'Shares successfully bought');
+                      res.redirect('/dashboard');
+                    })
+                    .catch(err => console.log(err));
+                }// end sufficient funds
               }// end else if valid tickerSymbol
             })// end fetch.then().then()
             .catch(err => console.log(err));
