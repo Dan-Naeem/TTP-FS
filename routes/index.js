@@ -3,8 +3,8 @@ const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 const fetch = require('node-fetch');
 
-// url for IEX API
-const url = 'https://api.iextrading.com/1.0/tops?symbols=';
+// url for IEX API ->  provides last sale price, size, and time
+const url = 'https://api.iextrading.com/1.0/tops/last?symbols=';
 
 // User model
 const User = require('../models/User');
@@ -32,63 +32,83 @@ router.get('/dashboard/search', ensureAuthenticated, (req, res) =>
 
   // Search - post
 router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
+  console.log(req.body)
+  // capture values
   const email = req.user.email;
   const tickerSymbol = req.body.tickerSymbol;
   const numberOfShares = Number(req.body.numberOfShares);
-  User.findOne({ email: email })
-    .then(user => {
-      // if users exists (it should)
-      if(user) {
-        // fetch data
-        fetch(url+tickerSymbol)
-          .then(res => res.json())
-          .then(body => {
-            console.log(body)
-            // if body is an empty array []
-            if(body.length === 0){
-              // ticker symbol error, redirect
-              req.flash('error_msg', 'Invalid Ticker Symbol');
-              res.redirect('/dashboard/search');
-            }
-            // else is valid tickerSymbol
-            else {
-              // ticker symbol does exist
-              //check to see if stock already exists
-              let exists = false;
-              user.stocks.forEach(function(item, index) {
-                // if match
-                if( item.tickerSymbol === tickerSymbol) {
-                  // update stock, raise flag
-                  user.stocks[index].numberOfShares += numberOfShares;
-                  exists = true;
-                }
-              });//end forEach()
-              // if new stock entry, update users stock profile (push)
-              if(exists === false) {
-                // create a stock object, push
-                let newStock = {
-                  tickerSymbol: tickerSymbol,
-                  numberOfShares: numberOfShares,
-                }
-                user.stocks.push(newStock);
+  // input validation
+  // tickerSymbol: empty string
+  if(tickerSymbol === '') {
+    req.flash('error_msg', 'Invalid Ticker Symbol: EMPTY STRING');
+    res.redirect('/dashboard/search');
+  }
+  // numberOfShares: zero or negative
+  else if (numberOfShares < 1) {
+    req.flash('error_msg', 'Number of Shares should be 1 or more');
+    res.redirect('/dashboard/search');
+  }
+  // numberOfShares: not an integer
+  else if(!Number.isInteger(numberOfShares)) {
+    req.flash('error_msg', 'Number of Shares should be an integer');
+    res.redirect('/dashboard/search');
+  }
+  // else inputs pass validation
+  else {
+    User.findOne({ email: email })
+      .then(user => {
+        // if users exists (it should)
+        if(user) {
+          // fetch data
+          fetch(url+tickerSymbol)
+            .then(res => res.json())
+            .then(body => {
+              console.log('ticker', tickerSymbol);
+              console.log(body)
+              // if body is an empty array []
+              if(body.length === 0){
+                console.log('length === 1');
+                // ticker symbol error, redirect
+                req.flash('error_msg', 'Invalid Ticker Symbol: NOT RECOGNIZED');
+                res.redirect('/dashboard/search');
               }
-              // save updated users profile
-              user.save()
-                .then(user => {
-                  // successful purchase of shares
-                  req.flash('success_msg', 'Shares successfully bought');
-                  res.redirect('/dashboard');
-                })
-                .catch(err => console.log(err));
-            }// end else if valid tickerSymbol
-          })// end fetch.then().then()
-          .catch(err => console.log(err));
-      }// end if user exists
-      else {
-        console.log('user doesnt exist')
-      }
-    })//end user.findOne().then()
-    .catch(err => console.log(err));
+              // else is valid tickerSymbol
+              else {
+                //check to see if stock already exists
+                let exists = false;
+                user.stocks.forEach(function(item, index) {
+                  // if match
+                  if( item.tickerSymbol === tickerSymbol) {
+                    // update stock, raise flag
+                    user.stocks[index].numberOfShares += numberOfShares;
+                    exists = true;
+                  }
+                });//end forEach()
+                // if new stock entry (flag not raised), update users stock profile (push)
+                if(exists === false) {
+                  // create a stock object, push
+                  let newStock = {
+                    tickerSymbol: tickerSymbol,
+                    numberOfShares: numberOfShares,
+                  }
+                  user.stocks.push(newStock);
+                }
+                // save updated users profile
+                user.save()
+                  .then(user => {
+                    // successful purchase of shares
+                    req.flash('success_msg', 'Shares successfully bought');
+                    res.redirect('/dashboard');
+                  })
+                  .catch(err => console.log(err));
+              }// end else if valid tickerSymbol
+            })// end fetch.then().then()
+            .catch(err => console.log(err));
+        }// end if user exists
+        else console.log('user doesnt exist')
+      })//end user.findOne().then()
+      .catch(err => console.log(err));
+  }
 });
 
 module.exports = router;
