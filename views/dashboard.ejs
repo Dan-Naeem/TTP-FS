@@ -9,3 +9,11 @@
 <h3><%= user.name %></h3>
 <h4><%= user.email %></h4>
 <h5><%= user.cash %></h5>
+<br />
+<br />
+
+<% user.stocks.forEach( function(stock) { %>
+  <%= stock.tickerSymbol %>
+  <%= stock.numberOfShares %>
+  <br />
+<% }); %>
