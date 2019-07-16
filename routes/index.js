@@ -11,4 +11,16 @@ router.get('/dashboard', ensureAuthenticated, (req, res) =>
     user: req.user
   }));
 
+// Portfolio
+router.get('/dashboard/portfolio', ensureAuthenticated, (req, res) =>
+  res.render('portfolio', {
+    user: req.user
+  }));
+
+// Search
+router.get('/dashboard/search', ensureAuthenticated, (req, res) =>
+  res.render('search', {
+    user: req.user
+  }));
+
 module.exports = router;
