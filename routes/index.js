@@ -29,7 +29,8 @@ router.get('/dashboard/search', ensureAuthenticated, (req, res) =>
   // Search - post
 router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
   const email = req.user.email;
-  const { tickerSymbol, numberOfShares } = req.body;
+  const tickerSymbol = req.body.tickerSymbol;
+  const numberOfShares = Number(req.body.numberOfShares);
   User.findOne({ email: email })
     .then(user => {
       // if users exists (it should)
@@ -39,8 +40,22 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
           tickerSymbol: tickerSymbol,
           numberOfShares: numberOfShares,
         }
-        // update users stock profile (push)
-        user.stocks.push(newStock);
+        //check to see if stock already exists
+        let exists = false;
+        user.stocks.forEach(function(item, index) {
+          // if match
+          if( item.tickerSymbol === tickerSymbol) {
+            console.log(user.stocks[index]);
+            console.log(newStock);
+            // update stock, raise flag
+            user.stocks[index].numberOfShares += numberOfShares;
+            exists = true;
+          }
+        });
+        // if new stock entry, update users stock profile (push)
+        if(exists === false) {
+          user.stocks.push(newStock);
+        }
         // save updated users profile
         user.save()
           .then(user => {
