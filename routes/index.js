@@ -47,7 +47,8 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
             // if body is an empty array []
             if(body.length === 0){
               // ticker symbol error, redirect
-              res.redirect('/dashboard');
+              req.flash('error_msg', 'Invalid Ticker Symbol');
+              res.redirect('/dashboard/search');
             }
             // else is valid tickerSymbol
             else {
@@ -74,6 +75,8 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
               // save updated users profile
               user.save()
                 .then(user => {
+                  // successful purchase of shares
+                  req.flash('success_msg', 'Shares successfully bought');
                   res.redirect('/dashboard');
                 })
                 .catch(err => console.log(err));
