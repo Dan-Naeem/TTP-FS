@@ -65,12 +65,10 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
             .then(body => {
               console.log('ticker', tickerSymbol)
               console.log('fetch', body)
-              console.log('price', body[0].price)
               // if body is an empty array []
               if(body.length === 0){
-                console.log('length === 1');
                 // ticker symbol error, redirect
-                req.flash('error_msg', 'Invalid Ticker Symbol: NOT RECOGNIZED');
+                req.flash('error_msg', `Invalid Ticker Symbol: ${tickerSymbol} NOT RECOGNIZED`);
                 res.redirect('/dashboard/search');
               }
               // else is valid tickerSymbol
