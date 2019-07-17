@@ -94,20 +94,27 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
                   user.stocks.forEach(function(item, index) {
                     // if match
                     if( item.tickerSymbol === tickerSymbol) {
-                      // update stock, raise flag
+                      // update user.stocks, raise flag
                       user.stocks[index].numberOfShares += numberOfShares;
                       exists = true;
                     }
                   });//end forEach()
-                  // if new stock entry (flag not raised), update users stock profile (push)
+                  // if new stock entry (flag not raised)
                   if(exists === false) {
-                    // create a stock object, push
+                    // create a stock object, push 
                     let newStock = {
                       tickerSymbol: tickerSymbol,
                       numberOfShares: numberOfShares,
                     }
                     user.stocks.push(newStock);
                   }
+                  // add transactions
+                  user.listOfTransactions.push({
+                    transaction:'buy',
+                    tickerSymbol: tickerSymbol,
+                    numberOfShares: numberOfShares,
+                    price: body[0].price,
+                  })
                   // save updated users profile
                   user.save()
                     .then(user => {
