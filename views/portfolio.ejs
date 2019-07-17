@@ -11,25 +11,31 @@
 <br />
 <br />
 
-<h5>Inorder</h5>
-<% user.listOfTransactions.forEach( function(transaction) { %>
-  <%= transaction.transaction %>
-  <%= transaction.tickerSymbol %>
-  <%= transaction.numberOfShares %>
-  <%= transaction.price %>
-  <%= transaction.date %>
-  <br />
-<% }); %>
-<br />
-<br />
-
-<h5>Reversed</h5>
 <% let arr = user.listOfTransactions; %>
 <% for(let i=arr.length-1; i >= 0; i--) { %>
-  <%= arr[i].transaction %>
-  <%= arr[i].tickerSymbol %>
-  <%= arr[i].numberOfShares %>
-  <%= arr[i].price %>
-  <%= arr[i].date %>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <%= arr[i].transaction %>
+      </div>
+      <div class="col-sm">
+        <%= arr[i].tickerSymbol %>
+      </div>
+      <div class="col-sm">
+        <%= arr[i].numberOfShares %>
+      </div>
+      <div class="col-sm">
+        <%= arr[i].price %>
+      </div>
+      <div class="col-sm">
+        <% let date = String(arr[i].date).split(" "); %>
+        <%= date[0] %>
+        <%= date[1] %>
+        <%= date[2] %>
+        <%= date[3] %>
+        <%= date[4] %>
+      </div>
+    </div>
+  </div>
   <br />
 <% } %>
