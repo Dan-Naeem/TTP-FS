@@ -11,7 +11,25 @@
 <br />
 <br />
 
-<% user.stocks.forEach( function(stock) { %>
-  <%= stock.tickerSymbol %>
-  <%= stock.numberOfShares %>
+<h5>Inorder</h5>
+<% user.listOfTransactions.forEach( function(transaction) { %>
+  <%= transaction.transaction %>
+  <%= transaction.tickerSymbol %>
+  <%= transaction.numberOfShares %>
+  <%= transaction.price %>
+  <%= transaction.date %>
+  <br />
 <% }); %>
+<br />
+<br />
+
+<h5>Reversed</h5>
+<% let arr = user.listOfTransactions; %>
+<% for(let i=arr.length-1; i >= 0; i--) { %>
+  <%= arr[i].transaction %>
+  <%= arr[i].tickerSymbol %>
+  <%= arr[i].numberOfShares %>
+  <%= arr[i].price %>
+  <%= arr[i].date %>
+  <br />
+<% } %>
