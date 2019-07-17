@@ -26,6 +26,18 @@ const UserSchema = new mongoose.Schema({
             tickerSymbol: String,
             numberOfShares: Number,
         }
+    ],
+    listOfTransactions: [
+        {
+            transaction: String,
+            tickerSymbol: String,
+            numberOfShares: Number,
+            price: Number,
+            date: {
+                type: Date,
+                default: Date.now,
+            }
+        }
     ]
 });
 
