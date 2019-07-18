@@ -1,15 +1,23 @@
 <% include ./partials/navbar %>
 
 <% include ./partials/messages %>
-<h3><%= user.name %></h3>
-<h4><%= user.email %></h4>
-<h5><%= user.cash %></h5>
-<br />
-<br />
+<div class="card border-primary my-4 mx-0 p-0" >
+  <div class="card-header">
+    <h2 style="<%'text: green'%>" ><%= user.name %></h2>
+  </div>
+  <div class="card-body border-bottom">
+      <h4 class="card-title float-left">Email</h4>
+      <h5 class="card-text float-right"><%= user.email %></h5>
+  </div>
+  <div class="card-body">
+      <h4 class="card-title float-left">Available Funds</h4>
+      <h5 class="card-text float-right"><%= `$${user.cash}` %></h5>
+  </div>
+</div>
 
-<h2 class="mb-5">Stocks Owned</h2>
+<h2 class="my-4">Stocks Owned</h2>
 
-<table class="table table-hover">
+<table class="table table-hover border">
 
   <thead>
     <tr class="bg-primary">
@@ -37,13 +45,13 @@
           <td><%= ask%></td>
           <td>
             <% if (sale > ask) { %>
-                <p> + </p>
+                <text>+</text> 
             <% } %>
             <% if (sale === ask) { %>
-                <p> same </p>
+                <text>=</text> 
             <% } %>
             <% if (sale < ask) { %>
-                <p> - </p>
+                <text>-</text> 
             <% } %>
           </td>
         </tr>
