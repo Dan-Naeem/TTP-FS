@@ -7,59 +7,47 @@
 <br />
 <br />
 
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        <p>Ticker Symbol</p>
-      </div>
-      <div class="col-sm">
-        <p>Number Of Shares</p>
-      </div>
-      <div class="col-sm">
-        <p>Last Sale Price</p>
-      </div>
-      <div class="col-sm">
-        <p>Ask Price</p>
-      </div>
-      <div class="col-sm">
-        <p>Performance</p>
-      </div>
-    </div>
-  </div>
+<h2 class="mb-5">Stocks Owned</h2>
 
-<% user.stocks.forEach( function(stock, index) { %>
-  <% let sale = askPriceArr[index].lastSalePrice; %>
-  <% let ask = askPriceArr[index].askPrice %>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        <%= stock.tickerSymbol %>
-      </div>
-      <div class="col-sm">
-        <%= stock.numberOfShares %>
-      </div>
-      <div class="col-sm">
-        <%= sale %>
-      </div>
-      <div class="col-sm">
-        <%= ask%>
-      </div>
-      <% if (sale > ask) { %>
-        <div class="col-sm">
-          <p> + </p>
-        </div>
-      <% } %>
-      <% if (sale === ask) { %>
-        <div class="col-sm">
-          <p> same </p>
-        </div>
-      <% } %>
-      <% if (sale < ask) { %>
-        <div class="col-sm">
-          <p> - </p>
-        </div>
-      <% } %>
-    </div>
-  </div>
-  <br />
-<% }); %>
+<table class="table table-hover">
+
+  <thead>
+    <tr class="bg-primary">
+      <th scope="col"><h4>Ticker Symbol</h4></th>
+      <th scope="col"><h4>Number Of Shares</h4></th>
+      <th scope="col"><h4>Last Sale Price</h4></th>
+      <th scope="col"><h4>Ask Price</h4></th>
+      <th scope="col"><h4>Performance</h4></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for( let index = 0; index < user.stocks.length; index++) {%>
+      <% let stock = user.stocks[index]; %>
+      <% let sale = askPriceArr[index].lastSalePrice; %>
+      <% let ask = askPriceArr[index].askPrice %>
+        <% if( index % 2 == 0 ) { %> 
+          <tr>
+        <% } else { %> 
+          <tr class="table-primary">
+        <% } %>
+          <td><%= stock.tickerSymbol %></td>
+          <td><%= stock.numberOfShares %></td>
+          <td><%= sale %></td>
+          <td><%= ask%></td>
+          <td>
+            <% if (sale > ask) { %>
+                <p> + </p>
+            <% } %>
+            <% if (sale === ask) { %>
+                <p> same </p>
+            <% } %>
+            <% if (sale < ask) { %>
+                <p> - </p>
+            <% } %>
+          </td>
+        </tr>
+    <% } %>
+  </tbody>
+
+</table>
