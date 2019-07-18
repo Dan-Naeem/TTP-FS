@@ -35,14 +35,17 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
   fetch(askPrice+stockNames)
     .then(res => res.json())
     .then(data => {
-      // store last sale price data for each owned stock
-      data.forEach((stock) => {
-        askPriceArr.push({
-          tickerSymbol: stock.symbol,
-          lastSalePrice: stock.lastSalePrice,
-          askPrice: stock.askPrice,
+      // if data exists (required for new accounts)
+      if (data && data.length > 0) {
+        // store last sale price data for each owned stock
+        data.forEach((stock) => {
+          askPriceArr.push({
+            tickerSymbol: stock.symbol,
+            lastSalePrice: stock.lastSalePrice,
+            askPrice: stock.askPrice,
+          });
         });
-      });
+      }
     })
     .then(() => {
       console.log('then render dash');
