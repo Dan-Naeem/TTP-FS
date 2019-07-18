@@ -13,8 +13,59 @@
 <br />
 <br />
 
-<% user.stocks.forEach( function(stock) { %>
-  <%= stock.tickerSymbol %>
-  <%= stock.numberOfShares %>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <p>Ticker Symbol</p>
+      </div>
+      <div class="col-sm">
+        <p>Number Of Shares</p>
+      </div>
+      <div class="col-sm">
+        <p>Last Sale Price</p>
+      </div>
+      <div class="col-sm">
+        <p>Ask Price</p>
+      </div>
+      <div class="col-sm">
+        <p>Performance</p>
+      </div>
+    </div>
+  </div>
+
+<% user.stocks.forEach( function(stock, index) { %>
+  <% let sale = askPriceArr[index].lastSalePrice; %>
+  <% let ask = askPriceArr[index].askPrice %>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <%= stock.tickerSymbol %>
+      </div>
+      <div class="col-sm">
+        <%= stock.numberOfShares %>
+      </div>
+      <div class="col-sm">
+        <%= sale %>
+      </div>
+      <div class="col-sm">
+        <%= ask%>
+      </div>
+      <% if (sale > ask) { %>
+        <div class="col-sm">
+          <p> + </p>
+        </div>
+      <% } %>
+      <% if (sale === ask) { %>
+        <div class="col-sm">
+          <p> same </p>
+        </div>
+      <% } %>
+      <% if (sale < ask) { %>
+        <div class="col-sm">
+          <p> - </p>
+        </div>
+      <% } %>
+    </div>
+  </div>
   <br />
 <% }); %>
