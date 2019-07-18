@@ -6,6 +6,15 @@ const fetch = require('node-fetch');
 // url for IEX API ->  provides last sale price, size, and time
 const url = 'https://api.iextrading.com/1.0/tops/last?symbols=';
 
+/* 
+  Unfortunately, IEX api for official price isnt working
+    >> 'https://api.iextrading.com/1.0/deep/official-price?symbols='
+  as such, I am using the standard /tops api call to get 
+  the ask price and use that as a reference for determining performance
+*/
+// url for IEX API -> check last sale price
+const askPrice = 'https://api.iextrading.com/1.0/tops?symbols=';
+
 // User model
 const User = require('../models/User');
 
@@ -13,10 +22,39 @@ const User = require('../models/User');
 router.get('/', (req, res) => res.render('welcome'));
 
 // Dashboard
-router.get('/dashboard', ensureAuthenticated, (req, res) => 
-  res.render('dashboard', {
-    user: req.user
-  }));
+router.get('/dashboard', ensureAuthenticated, (req, res) => {
+  // store ask price for all owned stock
+  let askPriceArr = [];
+  // construct string of all owned stocks
+  let stockNames = '';
+  req.user.stocks.forEach(function(stock) {
+    stockNames += stock.tickerSymbol + ','
+  });
+  console.log(stockNames);
+  // fetch stock data
+  fetch(askPrice+stockNames)
+    .then(res => res.json())
+    .then(data => {
+      // store last sale price data for each owned stock
+      data.forEach((stock) => {
+        askPriceArr.push({
+          tickerSymbol: stock.symbol,
+          lastSalePrice: stock.lastSalePrice,
+          askPrice: stock.askPrice,
+        });
+      });
+    })
+    .then(() => {
+      console.log('then render dash');
+      console.log(askPriceArr);
+      res.render('dashboard', {
+        user: req.user,
+        askPriceArr: askPriceArr,
+      })
+    })
+    .catch(err => console.log(err));
+    //res.render('dashboard', {user: req.user})
+});
 
 // Portfolio
 router.get('/dashboard/portfolio', ensureAuthenticated, (req, res) =>
