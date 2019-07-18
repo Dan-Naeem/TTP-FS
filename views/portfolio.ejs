@@ -1,35 +1,41 @@
 <% include ./partials/navbar %>
 
-<h3><%= user.name %></h3>
-<h5><%= user.cash %></h5>
-<br />
-<br />
+<h2 class="mb-5">Transactions</h2>
 
-<% let arr = user.listOfTransactions; %>
-<% for(let i=arr.length-1; i >= 0; i--) { %>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        <%= arr[i].transaction %>
-      </div>
-      <div class="col-sm">
-        <%= arr[i].tickerSymbol %>
-      </div>
-      <div class="col-sm">
-        <%= arr[i].numberOfShares %>
-      </div>
-      <div class="col-sm">
-        <%= arr[i].price %>
-      </div>
-      <div class="col-sm">
+<table class="table table-hover">
+
+  <thead>
+    <tr class="bg-primary">
+      <th scope="col"><h4>Type</h4></th>
+      <th scope="col"><h4>Ticker Symbol</h4></th>
+      <th scope="col"><h4>Number of Shares</h4></th>
+      <th scope="col"><h4>Price</h4></th>
+      <th scope="col"><h4>Date</h4></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% let arr = user.listOfTransactions; %>
+    <% for(let i=arr.length-1; i >= 0; i--) { %>
+      <% if( i%2 == 1 ) { %> 
+        <tr>
+      <% } else { %> 
+        <tr class="table-primary">
+      <% } %>
+        <td><%= arr[i].transaction %></td>
+        <td><%= arr[i].tickerSymbol %></td>
+        <td><%= arr[i].numberOfShares %></td>
+        <td><%= arr[i].price %></td>
         <% let date = String(arr[i].date).split(" "); %>
-        <%= date[0] %>
-        <%= date[1] %>
-        <%= date[2] %>
-        <%= date[3] %>
-        <%= date[4] %>
-      </div>
-    </div>
-  </div>
-  <br />
-<% } %>
+        <td>
+          <%= date[0] %>
+          <%= date[1] %>
+          <%= date[2] %>
+          <%= date[3] %>
+          <%= date[4] %>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+
+</table>
