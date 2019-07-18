@@ -76,7 +76,7 @@ router.post('/dashboard/search', ensureAuthenticated, (req, res) => {
   console.log(req.body)
   // capture values
   const email = req.user.email;
-  const tickerSymbol = req.body.tickerSymbol;
+  const tickerSymbol = (req.body.tickerSymbol).toUpperCase();
   const numberOfShares = Number(req.body.numberOfShares);
   // input validation
   // tickerSymbol: empty string
