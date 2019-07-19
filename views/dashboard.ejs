@@ -33,28 +33,42 @@
     <% for( let index = 0; index < user.stocks.length; index++) {%>
       <% let stock = user.stocks[index]; %>
       <% let sale = askPriceArr[index].lastSalePrice; %>
-      <% let ask = askPriceArr[index].askPrice %>
-        <% if( index % 2 == 0 ) { %> 
-          <tr>
-        <% } else { %> 
-          <tr class="table-primary">
+      <% let ask = askPriceArr[index].askPrice; %>
+      <% if( index % 2 == 0 ) { %> 
+        <tr>
+      <% } else { %> 
+        <tr class="table-primary">
+      <% } %>
+      <% if (sale > ask) { %>
+        <td>
+          <text class="text-success"><%= stock.tickerSymbol %></text>
+        </td>
+      <% } %>
+      <% if (sale === ask) { %>
+        <td>
+          <text class="text-muted"><%= stock.tickerSymbol %></text>
+        </td>
+      <% } %>
+      <% if (sale < ask) { %>
+        <td>
+          <text class="text-primary"><%= stock.tickerSymbol %></text>
+        </td>
+      <% } %>
+        <td><text><%= stock.numberOfShares %></text></td>
+        <td><text><%= sale %></text></td>
+        <td><text><%= ask %></text></td>
+        <td>
+        <% if (sale > ask) { %>
+          <text>+</text> 
         <% } %>
-          <td><%= stock.tickerSymbol %></td>
-          <td><%= stock.numberOfShares %></td>
-          <td><%= sale %></td>
-          <td><%= ask%></td>
-          <td>
-            <% if (sale > ask) { %>
-                <text>+</text> 
-            <% } %>
-            <% if (sale === ask) { %>
-                <text>=</text> 
-            <% } %>
-            <% if (sale < ask) { %>
-                <text>-</text> 
-            <% } %>
-          </td>
-        </tr>
+        <% if (sale === ask) { %>
+          <text>=</text> 
+        <% } %>
+        <% if (sale < ask) { %>
+          <text>-</text> 
+        <% } %>
+        </td>
+      </tr>
     <% } %>
   </tbody>
 
