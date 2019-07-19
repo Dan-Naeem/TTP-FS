@@ -1,26 +1,49 @@
 <% include ./partials/navbar %>
 
 <% include ./partials/messages %>
-<form action="/dashboard/search" method="POST">
-  <div class="form-group">
-    <label for="tickerSymbol">Ticker Symbol</label>
-    <input
-      type="string"
-      id="tickerSymbol"
-      name="tickerSymbol"
-      class="form-control"
-      placeholder="Enter Ticker Symbol"
-    />
+
+<div class="card border-dark">
+
+  <div class="card-header">
+    <h2 class="my-2">Buy Shares</h2>
   </div>
-  <div class="form-group">
-    <label for="numberOfShares">Number of Shares</label>
-    <input
-      type="number"
-      id="numberOfShares"
-      name="numberOfShares"
-      class="form-control"
-      placeholder="Enter Number of Shares"
-    />
+
+  <div class="card-body">
+
+    <form action="/dashboard/search" method="POST">
+
+      <div class="form-group my-4">
+        <label class="card-title" for="tickerSymbol">
+          <h4>Ticker Symbol</h4>
+        </label>
+        <input
+          type="string"
+          id="tickerSymbol"
+          name="tickerSymbol"
+          class="form-control"
+          placeholder="Enter Ticker Symbol"
+        />
+      </div>
+
+      <div class="form-group my-4">
+        <label class="card-title" for="numberOfShares">
+          <h4>Number of Shares</h4>
+        </label>
+        <input
+          type="number"
+          id="numberOfShares"
+          name="numberOfShares"
+          class="form-control"
+          placeholder="Enter Number of Shares"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mt-4 mb-1">
+        <h3>Buy</h3>
+      </button>
+      
+    </form>
+
   </div>
-  <button type="submit" class="btn btn-primary btn-block">Buy</button>
-</form>
+
+</div>
